@@ -83,7 +83,7 @@ jobs:
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             zip $RELEASE_DIR/arxiv_mcp-${{ matrix.target }}${{ matrix.ext }}.zip $BIN_NAME.exe
           else
-            tar -czvf $RELEASE_DIR/../$RELEASE_DIR/arxiv_mcp-${{ matrix.target }}.tar.gz $BIN_NAME
+            tar -czvf ../../../$RELEASE_DIR/arxiv_mcp-${{ matrix.target }}.tar.gz $BIN_NAME
           fi
 
       - name: Upload Release Asset
