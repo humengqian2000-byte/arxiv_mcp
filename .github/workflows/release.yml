@@ -8,6 +8,8 @@ on:
 
 jobs:
   release:
+    permissions:
+      contents: write
     strategy:
       matrix:
         include:
