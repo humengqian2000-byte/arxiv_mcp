@@ -59,24 +59,35 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
-      - name: Package
+      - name: Package (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: powershell
+        run: |
+          $BIN_NAME = "arxiv_mcp"
+          $TARGET_DIR = "target/${{ matrix.target }}/release"
+          $RELEASE_DIR = "release"
+
+          New-Item -ItemType Directory -Force -Path $RELEASE_DIR | Out-Null
+
+          if (-not (Test-Path "$TARGET_DIR\$BIN_NAME.exe")) {
+            Write-Host "Error: Binary not found!"
+            exit 1
+          }
+
+          Compress-Archive -Path "$TARGET_DIR\$BIN_NAME.exe" -DestinationPath "$RELEASE_DIR\arxiv_mcp-${{ matrix.target }}.zip" -Force
+
+      - name: Package (Unix)
+        if: matrix.os != 'windows-latest'
         shell: bash
         run: |
           BIN_NAME="arxiv_mcp"
           TARGET_DIR="target/${{ matrix.target }}/release"
           RELEASE_DIR="release"
 
-          # 确保 release 目录存在
           mkdir -p $RELEASE_DIR
-
-          # 切换到 target release 目录
           cd $TARGET_DIR
 
-          # 列出文件用于调试
-          ls -la
-
-          # 确认二进制文件存在
-          if [ ! -f "$BIN_NAME" ] && [ ! -f "$BIN_NAME.exe" ]; then
+          if [ ! -f "$BIN_NAME" ]; then
             echo "Error: Binary not found!"
             exit 1
           fi
